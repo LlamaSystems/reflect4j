@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.reflect4j</groupId>
+    <artifactId>reflect4j</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>Reflect4j</name>
+    <description>A high-level Java reflection library providing fluent APIs, caching, and advanced utilities for
+        introspection and dynamic invocation.
+    </description>
+    <url>https://github.com/Reflect4j/reflect4j</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>aliabbosashurov</id>
+            <name>Aliabbos Ashurov</name>
+            <email>aliabbosashurov.forwork@gmail.com</email>
+            <organization>Reflect4j</organization>
+            <organizationUrl>https://github.com/Reflect4j</organizationUrl>
+            <timezone>+5</timezone>
+        </developer>
+    </developers>
+    <modules>
+        <module>reflect4j-api</module>
+        <module>reflect4j-core</module>
+        <module>reflect4j-assertions</module>
+        <module>reflect4j-annotations</module>
+        <module>reflect4j-commons</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:git://github.com/Reflect4j/reflect4j.git</connection>
+        <developerConnection>scm:git:ssh://github.com/Reflect4j/reflect4j.git</developerConnection>
+        <url>https://github.com/Reflect4j/reflect4j</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/Reflect4j/reflect4j/issues</url>
+    </issueManagement>
+
+    <properties>
+        <java.version>25</java.version>
+        <junit.version>5.13.4</junit.version>
+        <assertJ.version>3.27.6</assertJ.version>
+
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertJ.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.14.1</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
