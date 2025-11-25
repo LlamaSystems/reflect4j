@@ -1,5 +1,8 @@
 package io.github.reflect4j.api.descriptor;
 
+import io.github.reflect4j.api.exception.ClassNotFoundRuntimeException;
+import io.github.reflect4j.commons.Params;
+
 import java.util.List;
 
 /// # ClassDescriptor
@@ -11,16 +14,15 @@ import java.util.List;
 /// This abstraction unifies the representation of classes while enabling
 /// type-safe queries, annotation inspection, and fluent assertions.
 ///
-/// Single-element lookup methods such as [#getField(String)] and etc.
+/// Single-element lookup methods such as [#getField(String)] etc.
 /// return `null` if the element is not found.
 /// Bulk queries such as [#getFields()], [#getMethods()], and
 /// [#getConstructors()] always return immutable, possibly empty lists.
 ///
 /// @param <T> the type represented by this descriptor
-///
 /// @author Aliabbos Ashurov
 /// @since 1.0.0
-public interface ClassDescriptor<T> extends AnnotatedElementDescriptor<Class<T>> {
+public interface ClassDescriptor<T> extends AnnotatedElementDescriptor<Class<T>, ClassDescriptor<T>> {
 
     /// Returns the package name of this class.
     ///
@@ -36,7 +38,6 @@ public interface ClassDescriptor<T> extends AnnotatedElementDescriptor<Class<T>>
     /// Returns the field with the given name if present.
     ///
     /// @param name the field name; must not be `null`
-    ///
     /// @return an empty [FieldDescriptor] if not found; never `null`
     /// @throws NullPointerException if the name is `null`
     FieldDescriptor getField(String name);
@@ -55,7 +56,6 @@ public interface ClassDescriptor<T> extends AnnotatedElementDescriptor<Class<T>>
     /// its name and parameter types in a JVM-style descriptor form.
     ///
     /// @param signature the method signature; must not be `null`
-    ///
     /// @return an empty [MethodDescriptor] if not found; never `null`
     /// @throws NullPointerException                                        if the signature is `null`
     /// @throws io.github.reflect4j.api.exception.InvalidSignatureException if the signature is not a valid JVM-style method descriptor
@@ -64,11 +64,10 @@ public interface ClassDescriptor<T> extends AnnotatedElementDescriptor<Class<T>>
     /// Returns the method with the given name and parameter types if present.
     ///
     /// @param name           the method name; must not be `null`
-    /// @param parameterTypes the parameter types; must not be `null`
-    ///
+    /// @param params the parameter types; must not be `null`
     /// @return an empty [MethodDescriptor] if not found; never `null`
     /// @throws NullPointerException if the name or parameterTypes is `null`
-    MethodDescriptor getMethod(String name, Class<?>... parameterTypes);
+    MethodDescriptor getMethod(String name, Params params);
 
     /// Returns all methods declared in this class.
     ///
@@ -81,7 +80,6 @@ public interface ClassDescriptor<T> extends AnnotatedElementDescriptor<Class<T>>
     /// Returns a constructor matching the given signature if present.
     ///
     /// @param signature the constructor signature; must not be `null`
-    ///
     /// @return an empty [ConstructorDescriptor] if not found; never `null`
     /// @throws NullPointerException                                        if the signature is `null`
     /// @throws io.github.reflect4j.api.exception.InvalidSignatureException if the signature is not a valid JVM-style constructor descriptor
@@ -89,11 +87,10 @@ public interface ClassDescriptor<T> extends AnnotatedElementDescriptor<Class<T>>
 
     /// Returns the constructor with the specified parameter types if present.
     ///
-    /// @param parameterTypes the constructor parameter types; must not be `null`
-    ///
+    /// @param params the constructor parameter types; must not be `null`
     /// @return an empty [ConstructorDescriptor] if not found; never `null`
     /// @throws NullPointerException if the parameterTypes is `null`
-    ConstructorDescriptor<T> getConstructor(Class<?>... parameterTypes);
+    ConstructorDescriptor<T> getConstructor(Params params);
 
     /// Returns all constructors declared in this class.
     ///
@@ -187,11 +184,24 @@ public interface ClassDescriptor<T> extends AnnotatedElementDescriptor<Class<T>>
     ///
     /// @param targetType the target type; must not be `null`
     /// @param <R>        the target type parameter
-    ///
     /// @return the underlying [Class] cast to `R`
     /// @throws NullPointerException if the targetType is `null`
     /// @throws ClassCastException   if the underlying class cannot be cast to `R`
     default <R> R cast(Class<R> targetType) {
         return targetType.cast(unwrap());
+    }
+
+    /// Ensures that the underlying class element is non-null.
+    /// This method should be used when you are confident that the descriptor wraps
+    /// an actual class. If the class is absent, an exception is thrown.
+    ///
+    /// @return this descriptor for fluent chaining
+    /// @throws ClassNotFoundRuntimeException if the underlying class element is null
+    @Override
+    default ClassDescriptor<T> unsafe() {
+        if (!isPresent()) {
+            throw new ClassNotFoundRuntimeException("Class not found: " + getSignature());
+        }
+        return this;
     }
 }

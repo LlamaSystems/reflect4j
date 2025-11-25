@@ -1,5 +1,6 @@
 package io.github.reflect4j.api.descriptor;
 
+import io.github.reflect4j.api.exception.MethodNotFoundException;
 import io.github.reflect4j.api.invoke.MethodInvocationResult;
 
 import java.lang.reflect.Method;
@@ -22,7 +23,7 @@ import java.util.List;
 ///
 /// @author Aliabbos Ashurov
 /// @since 1.0.0
-public interface MethodDescriptor extends MemberDescriptor<Method> {
+public interface MethodDescriptor extends MemberDescriptor<Method, MethodDescriptor> {
 
     /// Returns the return type of this method.
     ///
@@ -48,11 +49,6 @@ public interface MethodDescriptor extends MemberDescriptor<Method> {
     /// @return the number of parameters; always non-negative
     int getParameterCount();
 
-    /// Returns whether this method accepts a variable number of arguments.
-    ///
-    /// @return `true` if this method has a varargs parameter, `false` otherwise
-    boolean isVarArgs();
-
     /// Returns whether this method is declared `abstract`.
     ///
     /// @return `true` if this method is abstract, `false` otherwise
@@ -77,22 +73,7 @@ public interface MethodDescriptor extends MemberDescriptor<Method> {
     ///
     /// @return `true` if this method is native, `false` otherwise
     boolean isNative();
-
-    /// Returns whether this method is a compiler-generated bridge method.
-    ///
-    /// Bridge methods are created by the compiler to preserve polymorphism in
-    /// the presence of generics.
-    ///
-    /// @return `true` if this method is a bridge method, `false` otherwise
-    boolean isBridge();
-
-    /// Returns whether this method is synthetic.
-    ///
-    /// Synthetic methods are compiler-generated methods not present in source code.
-    ///
-    /// @return `true` if this method is synthetic, `false` otherwise
-    boolean isSynthetic();
-
+    
     /// Returns whether this method is declared `public`.
     ///
     /// @return `true` if this method is public, `false` otherwise
@@ -123,8 +104,21 @@ public interface MethodDescriptor extends MemberDescriptor<Method> {
     /// @param <R>    the expected return type
     /// @param target the target object on which to invoke the method; `null` if static
     /// @param args   the arguments to pass to the method; must not be `null`
-    ///
     /// @return a [MethodInvocationResult] representing the outcome; never `null`
     /// @throws NullPointerException if args is `null`
     <R> MethodInvocationResult<R> invoke(Object target, Object... args);
+
+    /// Ensures that the underlying method element is non-null.
+    /// This method should be used when you are confident that the descriptor wraps
+    /// an actual method. If the method is absent, an exception is thrown.
+    ///
+    /// @return this descriptor for fluent chaining
+    /// @throws MethodNotFoundException if the underlying method element is null
+    @Override
+    default MethodDescriptor unsafe() {
+        if (!isPresent()) {
+            throw new MethodNotFoundException("Method not found: " + getSignature());
+        }
+        return this;
+    }
 }

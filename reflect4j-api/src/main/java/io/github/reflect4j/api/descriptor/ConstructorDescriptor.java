@@ -1,5 +1,6 @@
 package io.github.reflect4j.api.descriptor;
 
+import io.github.reflect4j.api.exception.ConstructorNotFoundException;
 import io.github.reflect4j.api.invoke.ConstructorInvocationResult;
 
 import java.lang.reflect.Constructor;
@@ -19,10 +20,9 @@ import java.util.List;
 /// instance and any exception raised during the call.
 ///
 /// @param <T> the type of the class declaring this constructor
-///
 /// @author Aliabbos Ashurov
 /// @since 1.0.0
-public interface ConstructorDescriptor<T> extends MemberDescriptor<Constructor<T>> {
+public interface ConstructorDescriptor<T> extends MemberDescriptor<Constructor<T>, ConstructorDescriptor<T>> {
 
     /// Returns the parameter types of this constructor in declaration order.
     ///
@@ -80,8 +80,21 @@ public interface ConstructorDescriptor<T> extends MemberDescriptor<Constructor<T
     ///
     /// @param args the arguments to pass to the constructor; must not be `null`
     /// @param <R>  the type of the created instance
-    ///
     /// @return a [ConstructorInvocationResult] representing the outcome; never `null`
     /// @throws NullPointerException if args is `null`
     <R> ConstructorInvocationResult<R> invoke(Object... args);
+
+    /// Ensures that the underlying constructor element is non-null.
+    /// This method should be used when you are confident that the descriptor wraps
+    /// an actual constructor. If the constructor is absent, an exception is thrown.
+    ///
+    /// @return this descriptor for fluent chaining
+    /// @throws ConstructorNotFoundException if the underlying constructor element is null
+    @Override
+    default ConstructorDescriptor<T> unsafe() {
+        if (!isPresent()) {
+            throw new ConstructorNotFoundException("Constructor not found: " + getSignature());
+        }
+        return this;
+    }
 }

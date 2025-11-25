@@ -1,6 +1,7 @@
 package io.github.reflect4j.api.descriptor;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /// # AnnotatedElementDescriptor
@@ -13,11 +14,12 @@ import java.util.List;
 /// dependencies), and fluent assertions. All annotation-related operations are defined
 /// here to avoid duplication in subclasses.
 ///
-/// @param <T> the underlying reflective type (e.g., [java.lang.reflect.Method])
-///
+/// @param <T>    the underlying reflective Java element type (e.g., [java.lang.reflect.Method], [java.lang.reflect.Field])
+/// @param <SELF> the concrete descriptor subtype extending this interface, used for fluent chaining
 /// @author Aliabbos Ashurov
 /// @since 1.0.0
-public interface AnnotatedElementDescriptor<T> extends Descriptor<T> {
+public interface AnnotatedElementDescriptor<T extends AnnotatedElement, SELF extends AnnotatedElementDescriptor<T, SELF>>
+        extends Descriptor<T, SELF> {
 
     /// Returns a descriptor for the annotation of the specified type if present on this element.
     ///
@@ -27,7 +29,6 @@ public interface AnnotatedElementDescriptor<T> extends Descriptor<T> {
     ///
     /// @param <A>  the annotation type
     /// @param type the annotation class to look for; must not be `null`
-    ///
     /// @return an [AnnotationDescriptor] of type `A` if the annotation is present;
     ///         otherwise, an empty descriptor (never `null`)
     /// @throws NullPointerException if the type is `null`
@@ -47,7 +48,6 @@ public interface AnnotatedElementDescriptor<T> extends Descriptor<T> {
     /// is thrown immediately to prevent ambiguous or incorrect usage.
     ///
     /// @param signature the fully qualified annotation class name; must not be `null`
-    ///
     /// @return an [AnnotationDescriptor] for the annotation if both the element and the
     ///         annotation class are resolvable; otherwise, an empty descriptor (never `null`)
     /// @throws NullPointerException                                        if the signature is `null`
@@ -58,7 +58,6 @@ public interface AnnotatedElementDescriptor<T> extends Descriptor<T> {
     ///
     /// @param <A>  the annotation type
     /// @param type the annotation class to check; must not be `null`
-    ///
     /// @return `true` if the annotation is present, `false` otherwise
     /// @throws NullPointerException if the type is `null`
     <A extends Annotation> boolean hasAnnotation(Class<A> type);
@@ -74,7 +73,6 @@ public interface AnnotatedElementDescriptor<T> extends Descriptor<T> {
     /// If the signature does not start with `@`, an [io.github.reflect4j.api.exception.InvalidSignatureException] is thrown.
     ///
     /// @param signature the fully qualified annotation class name; must not be `null`
-    ///
     /// @return `true` if the annotation is present and resolvable, `false` otherwise
     /// @throws NullPointerException                                        if the signature is `null`
     /// @throws io.github.reflect4j.api.exception.InvalidSignatureException if the signature does not start with "@"
@@ -87,8 +85,8 @@ public interface AnnotatedElementDescriptor<T> extends Descriptor<T> {
     /// for example by using [java.util.Collections#unmodifiableList(List)] or
     /// [java.util.List#copyOf(java.util.Collection)].
     ///
-    /// Each descriptor supports full introspection (attributes, meta-annotations, assertions),
-    /// even if the annotation classes are not present on the classpath (subject to implementation).
+    /// Each descriptor in the returned list supports full introspection, including
+    /// attribute access, meta-annotation lookup, and assertion operations.
     ///
     /// @return an immutable list of [AnnotationDescriptor] instances, never `null`
     List<? extends AnnotationDescriptor<?>> getAnnotations();

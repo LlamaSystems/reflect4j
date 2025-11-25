@@ -1,5 +1,7 @@
 package io.github.reflect4j.api.descriptor;
 
+import java.lang.reflect.AnnotatedElement;
+
 /// # MemberDescriptor
 ///
 /// Represents a reflective descriptor for class members such as fields,
@@ -16,11 +18,12 @@ package io.github.reflect4j.api.descriptor;
 /// [java.lang.reflect.Member] and expose a uniform, type-safe API
 /// for reflective analysis and invocation.
 ///
-/// @param <T> the underlying reflective type (e.g., [java.lang.reflect.Method], [java.lang.reflect.Field], or [java.lang.reflect.Constructor])
-///
+/// @param <T>    the underlying reflective type (e.g., [java.lang.reflect.Method], [java.lang.reflect.Field], or [java.lang.reflect.Constructor])
+/// @param <SELF> the concrete descriptor subtype extending this interface, used for fluent chaining and self-typing
 /// @author Aliabbos Ashurov
 /// @since 1.0.0
-public interface MemberDescriptor<T> extends AnnotatedElementDescriptor<T> {
+public interface MemberDescriptor<T extends AnnotatedElement, SELF extends MemberDescriptor<T, SELF>>
+        extends AnnotatedElementDescriptor<T, SELF> {
 
     /// Returns the class in which this member is declared.
     ///

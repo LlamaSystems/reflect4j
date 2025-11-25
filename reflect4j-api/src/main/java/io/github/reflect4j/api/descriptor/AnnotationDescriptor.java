@@ -1,5 +1,7 @@
 package io.github.reflect4j.api.descriptor;
 
+import io.github.reflect4j.api.exception.AnnotationNotFoundException;
+
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +17,10 @@ import java.util.Map;
 /// signature-based queries, default values, and fluent inspection of meta-annotations.
 ///
 /// @param <T> the annotation type represented by this descriptor
-///
 /// @author Aliabbos Ashurov
 /// @since 1.0.0
-public interface AnnotationDescriptor<T extends Annotation> extends Descriptor<T> {
+public interface AnnotationDescriptor<T extends Annotation>
+        extends Descriptor<T, AnnotationDescriptor<T>> {
 
     /// Returns the annotation type of this descriptor.
     ///
@@ -36,7 +38,6 @@ public interface AnnotationDescriptor<T extends Annotation> extends Descriptor<T
     /// The signature **must** include the "@" prefix (e.g., "@java.lang.annotation.Retention").
     ///
     /// @param signature the fully-qualified meta-annotation class name with "@" prefix; must not be `null`
-    ///
     /// @return an [AnnotationDescriptor] for the meta-annotation if both the annotation type
     ///         and the meta-annotation are present and resolvable; otherwise, an empty descriptor
     ///         (never `null`)
@@ -52,7 +53,6 @@ public interface AnnotationDescriptor<T extends Annotation> extends Descriptor<T
     ///
     /// @param <A>            the meta-annotation type
     /// @param annotationType the meta-annotation class to look for; must not be `null`
-    ///
     /// @return an [AnnotationDescriptor] of type `A` if the meta-annotation is present;
     ///         otherwise, an empty descriptor (never `null`)
     /// @throws NullPointerException if the annotationType is `null`
@@ -75,7 +75,6 @@ public interface AnnotationDescriptor<T extends Annotation> extends Descriptor<T
     /// Determines whether the annotation type is annotated with the specified meta-annotation type.
     ///
     /// @param annotationType the meta-annotation class to check; must not be `null`
-    ///
     /// @return `true` if the meta-annotation is present, `false` otherwise
     /// @throws NullPointerException if the annotationType is `null`
     boolean hasMetaAnnotation(Class<? extends Annotation> annotationType);
@@ -88,7 +87,6 @@ public interface AnnotationDescriptor<T extends Annotation> extends Descriptor<T
     /// For example: `"@java.lang.Override"`.
     ///
     /// @param signature the fully-qualified annotation class name, including "@"; must not be `null`
-    ///
     /// @return `true` if a matching meta-annotation is present, `false` otherwise
     /// @throws NullPointerException                                        if the signature is `null`
     /// @throws io.github.reflect4j.api.exception.InvalidSignatureException if the signature does not start with "@"
@@ -102,7 +100,6 @@ public interface AnnotationDescriptor<T extends Annotation> extends Descriptor<T
     /// @param name the attribute name (method name in the annotation); must not be `null`
     /// @param type the expected type of the attribute value; must not be `null`
     /// @param <R>  the expected return type
-    ///
     /// @return the value of the attribute, or `null` if not present and no default
     /// @throws NullPointerException if the name or type is `null`
     <R> R attribute(String name, Class<R> type);
@@ -113,7 +110,6 @@ public interface AnnotationDescriptor<T extends Annotation> extends Descriptor<T
     /// @param type         the expected type of the attribute value; must not be `null`
     /// @param defaultValue the value to return if the attribute is missing
     /// @param <R>          the expected return type
-    ///
     /// @throws NullPointerException if the name or type is `null`
     <R> R attribute(String name, Class<R> type, R defaultValue);
 
@@ -129,11 +125,24 @@ public interface AnnotationDescriptor<T extends Annotation> extends Descriptor<T
     ///
     /// @param targetType the target class to cast to; must not be `null`
     /// @param <R>        the target type
-    ///
     /// @return the annotation type cast to `R`
     /// @throws NullPointerException if the targetType is `null`
     /// @throws ClassCastException   if the annotation type cannot be cast to `R`
     default <R> R cast(Class<R> targetType) {
         return targetType.cast(getAnnotationType());
+    }
+
+    /// Ensures that the underlying annotation element is non-null.
+    /// This method should be used when you are confident that the descriptor wraps
+    /// an actual annotation. If the annotation is absent, an exception is thrown.
+    ///
+    /// @return this descriptor for fluent chaining
+    /// @throws AnnotationNotFoundException if the underlying annotation element is null
+    @Override
+    default AnnotationDescriptor<T> unsafe() {
+        if (!isPresent()) {
+            throw new AnnotationNotFoundException("Annotation not found: " + getSignature());
+        }
+        return this;
     }
 }

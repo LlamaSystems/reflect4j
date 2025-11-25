@@ -1,5 +1,6 @@
 package io.github.reflect4j.api.descriptor;
 
+import io.github.reflect4j.api.exception.FieldNotFoundException;
 import io.github.reflect4j.api.invoke.FieldAccessResult;
 
 import java.lang.reflect.Field;
@@ -20,7 +21,7 @@ import java.lang.reflect.Field;
 ///
 /// @author Aliabbos Ashurov
 /// @since 1.0.0
-public interface FieldDescriptor extends MemberDescriptor<Field> {
+public interface FieldDescriptor extends MemberDescriptor<Field, FieldDescriptor> {
 
     /// Returns the type of this field.
     ///
@@ -35,7 +36,6 @@ public interface FieldDescriptor extends MemberDescriptor<Field> {
     /// @param <T>   the type of the value to set
     /// @param obj   the target object on which to set the field; `null` if static
     /// @param value the value to set
-    ///
     /// @return a [FieldAccessResult] representing the outcome; never `null`
     /// @throws NullPointerException if value is `null` for a non-nullable field type
     <T> FieldAccessResult<T> set(Object obj, T value);
@@ -43,7 +43,6 @@ public interface FieldDescriptor extends MemberDescriptor<Field> {
     /// Retrieves the value of this field from the specified object instance.
     ///
     /// @param obj the target object from which to retrieve the field value; `null` if static
-    ///
     /// @return the field value
     Object get(Object obj);
 
@@ -88,4 +87,18 @@ public interface FieldDescriptor extends MemberDescriptor<Field> {
     ///
     /// @return `true` if package-private, `false` otherwise
     boolean isPackagePrivate();
+
+    /// Ensures that the underlying field element is non-null.
+    /// This method should be used when you are confident that the descriptor wraps
+    /// an actual field. If the field is absent, an exception is thrown.
+    ///
+    /// @return this descriptor for fluent chaining
+    /// @throws FieldNotFoundException if the underlying field element is null
+    @Override
+    default FieldDescriptor unsafe() {
+        if (!isPresent()) {
+            throw new FieldNotFoundException("Field not found: " + getSignature());
+        }
+        return this;
+    }
 }

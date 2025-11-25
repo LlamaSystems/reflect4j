@@ -9,10 +9,8 @@ package io.github.reflect4j.api.invoke;
 /// and determine whether the operation succeeded.
 ///
 /// @param <T> the type of the value produced by the operation (method return type, constructor instance type, or field type)
-///
 /// @author Aliabbos Ashurov
 /// @since 1.0.0
-///
 public interface InvocationResult<T> {
 
     /// Returns the actual result value of this operation.
@@ -24,6 +22,11 @@ public interface InvocationResult<T> {
     /// @return the result value, or `null` if the operation failed or is void
     T getValue();
 
+    /// Returns whether the operation completed successfully without throwing an exception.
+    ///
+    /// @return `true` if the operation succeeded, `false` otherwise
+    boolean isSuccess();
+
     /// Returns the exception thrown during the operation, if any.
     ///
     /// If the operation completed successfully, this method returns `null`.
@@ -31,9 +34,4 @@ public interface InvocationResult<T> {
     ///
     /// @return the exception thrown during the operation, or `null` if successful
     Throwable getException();
-
-    /// Returns whether the operation completed successfully without throwing an exception.
-    ///
-    /// @return `true` if the operation succeeded, `false` otherwise
-    boolean isSuccess();
 }
