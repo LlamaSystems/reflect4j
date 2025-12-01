@@ -1,1 +1,1 @@
-![R4J logo](/assets/r4j-logo-long.png)
+![R4J logo](/assets/r4j-long.png)
