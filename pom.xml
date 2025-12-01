@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.reflect4j</groupId>
+    <groupId>io.github.llamasystems</groupId>
     <artifactId>reflect4j</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
@@ -29,7 +29,7 @@
             <name>Aliabbos Ashurov</name>
             <email>aliabbosashurov.forwork@gmail.com</email>
             <organization>Reflect4j</organization>
-            <organizationUrl>https://github.com/Reflect4j</organizationUrl>
+            <organizationUrl>https://github.com/LlamaSystems</organizationUrl>
             <timezone>+5</timezone>
         </developer>
     </developers>
@@ -42,14 +42,14 @@
     </modules>
 
     <scm>
-        <connection>scm:git:git://github.com/Reflect4j/reflect4j.git</connection>
-        <developerConnection>scm:git:ssh://github.com/Reflect4j/reflect4j.git</developerConnection>
-        <url>https://github.com/Reflect4j/reflect4j</url>
+        <connection>scm:git:git://github.com/LlamaSystems/reflect4j.git</connection>
+        <developerConnection>scm:git:ssh://github.com/LlamaSystems/reflect4j.git</developerConnection>
+        <url>https://github.com/LlamaSystems/reflect4j</url>
     </scm>
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/Reflect4j/reflect4j/issues</url>
+        <url>https://github.com/LlamaSystems/reflect4j/issues</url>
     </issueManagement>
 
     <properties>

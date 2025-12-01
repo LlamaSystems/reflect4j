@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.github.reflect4j</groupId>
+        <groupId>io.github.llamasystems</groupId>
         <artifactId>reflect4j</artifactId>
         <version>1.0.0</version>
     </parent>
@@ -19,17 +19,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.reflect4j</groupId>
+            <groupId>io.github.llamasystems</groupId>
             <artifactId>reflect4j-api</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>io.github.reflect4j</groupId>
+            <groupId>io.github.llamasystems</groupId>
             <artifactId>reflect4j-annotations</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>io.github.reflect4j.commons</groupId>
+            <groupId>io.github.llamasystems</groupId>
             <artifactId>reflect4j-commons</artifactId>
             <version>1.0.0</version>
         </dependency>
